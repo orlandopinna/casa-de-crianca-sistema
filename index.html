@@ -1059,9 +1059,7 @@ function doLogin() {
   document.getElementById('user-name').textContent = match.nome;
   document.getElementById('user-avatar').textContent = match.inicial;
   document.getElementById('login-error').style.display = 'none';
-  carregarDadosNuvem().then(function() {
-    renderList();
-  });
+  carregarDadosNuvem();
 }
 
 document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });
@@ -1979,6 +1977,16 @@ renderList();
 // ── SUPABASE SYNC ──
 // ══════════════════════════════════════════════
 
+function renderAll() {
+  // Re-render whichever lists are relevant
+  try { renderList(); } catch(e) {}
+  try { renderOrcList(); } catch(e) {}
+  try { renderPCList(); } catch(e) {}
+  try { renderVendaList(); } catch(e) {}
+  try { renderEstoqueList(); } catch(e) {}
+  try { renderFinanceiro(); } catch(e) {}
+}
+
 const SUPA_URL = 'https://woqvufyqqpctceknlzia.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvcXZ1ZnlxcXBjdGNla25semlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNDMxMzQsImV4cCI6MjA5NTgxOTEzNH0.itjefpzPa6yn6cJirLxnhoopIICdK-fkmTdCnbIbWyI';
 
@@ -2020,8 +2028,10 @@ async function carregarDadosNuvem() {
       if (d._nextPCNum) nextPCNum = d._nextPCNum;
       if (d._nextVendaNum) nextVendaNum = d._nextVendaNum;
       showSyncStatus('✅ Dados carregados');
+      renderAll();
     } else {
       showSyncStatus('✅ Banco vazio — pronto para uso');
+      renderAll();
     }
   } catch(e) {
     console.error('Erro ao carregar:', e);
